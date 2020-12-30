@@ -17,11 +17,10 @@
  * Define Global Variables
  * 
 */
-const menu_link_class = 'menu_link';
-const section_class = 'section';
-const nav_bar_list_id = 'navbar_list';
-const ctive_section_class = 'active_class';
-
+const MENU_LINK_CLASS = 'menu__link';
+const SECTION_CLASS = 'section'
+const NAV_BAR_LIST_ID = 'navbar__list';
+const ACTIVE_SECTION_CLASS = 'your-active-class';
 
 /**
  * End Global Variables
@@ -29,113 +28,123 @@ const ctive_section_class = 'active_class';
  * 
 */
 /**
-* @desriptions Gets all section IDs from page
-* @returns {list} list of section IDs
+* @description    Gets all section IDs from page
+* @returns {list} List of section IDs
 */
 function getSections() {
-    const sections = document.querySelector(section_class);
-    const sectionslist = [];
+  const sections = document.querySelectorAll(SECTION_CLASS);
+  const sectionsList = [];
 
-    for (let i = 0; i < sections.clientHeight; i++) {
-        const sectionmap = new Map();
-        sectionMap.set('id', sections[i].id);
-        sectionMap.set('value', sections[i]. querySelector('h2').innertext)
-        sectionsList.push(sectionMap);
-    }
+  for (let i = 0; i < sections.length; i++) {
+    const sectionMap = new Map();
+    sectionMap.set('id', sections[i].id);
+    sectionMap.set('value', sections[i].querySelector('h2').innerText)
+    sectionsList.push(sectionMap);
+  }
 
-    return sectionsList;
+  return sectionsList;
 }
 
 /**
- *  @description Add navigation element
- *  @param {string} Section map contains section id and value
- *  @returns {object} New list element node
- */
+* @description      Add navigation element
+* @param {string}   Section map containing section id & value
+* @returns {object} New list element node
+*/
 function addSectionToNavBar(sectionMap) {
-    const newListElement = document.createElement ('li');
-    const newAnchorElement = document.createElement ('a');
+  const newListElement = document.createElement('li');
+  const newAnchorElement = document.createElement('a');
 
-    // creates "<a class="menu_link" href="#sectionN".Section N</a>"
-    newAnchorElement.href = '#' + sectionmap.get('id')
-    newAnchorElement.appendChild(newAnchorElement);
+  // creates "<a class="menu__link" href="#sectionN">Section N</a>"
+  newAnchorElement.href = '#' + sectionMap.get('id')
+  newAnchorElement.innerText = sectionMap.get('value');
 
-    return newListElement;
+  // append nav element to menu link class
+  newAnchorElement.className = MENU_LINK_CLASS;
+  newListElement.appendChild(newAnchorElement);
+
+  return newListElement;
 }
+
 /**
  * End Helper Functions
  * Begin Main Functions
  * 
 */
 
-// build the nav
+// Build the nav
 /**
- *  @description Build the navigation
- *  @param {object} List of the sections
- */
+* @description Build the navigation
+* @param {object} List of sections
+*/
 function buildTheNav(sections) {
-    const navBarFragment = document.createDocumentFragment('div');
+  const navBarFragment = document.createDocumentFragment('div');
 
-    // create nav bar structure
-    for (let i = 0; i < sections.length; i++) {
-        navBarFragment.appendChild(addSectionToNavBar (sections[i]));
+  // create nav bar structure
+  for (let i = 0; i < sections.length; i++) {
+    navBarFragment.appendChild(addSectionToNavBar(sections[i]));
+  }
+  const navBarElement = document.querySelector('#' + NAV_BAR_LIST_ID);
+  
+  // reflow and paint once for optimization
+  navBarElement.appendChild(navBarFragment); 
 }
-const navBarElement = document.querySelector('#' + Nav_Bar_List_Id);
-
-// reflow and paint for optimization
-navBarElement.appendChild(navBarFragment);
-}
-
 
 // Add class 'active' to section when near top of viewport
 /**
- *  @description Make the active section closest to the top of the screen
- *  @param {object} List of sections
- */
-function makeActive(sections); {
-    for (let i = 0; i < sections.length; i++) {
-        const section = document.querySelector('#'+ sections[i].get('id'));
-        const box = section.getBoundingClientRect();
-
-        // You can change the "if" values
-        if (box.top <= 150 && box.bottom >= 150) {
-            // Apply active state to corresponding Nav Link
-            section.classList.remove(Active_Section_Class);
-        }
+* @description Make active section closest to the top of screen
+* @param {object} List of sections
+*/
+function makeActive(sections) {
+  for (let i = 0; i < sections.length; i++) {
+    const section = document.querySelector('#' + sections[i].get('id'));
+    const box = section.getBoundingClientRect();
+    
+    // You can play with the values in the "if" condition to further make it more accurate. 
+    if (box.top <= 150 && box.bottom >= 150) {
+      // Apply active state on the current section and the corresponding Nav link.
+      section.classList.add(ACTIVE_SECTION_CLASS);
+    } else {
+      // Remove active state from other section and corresponding Nav link.
+      section.classList.remove(ACTIVE_SECTION_CLASS);
     }
+  }  
 }
 
 // Scroll to anchor ID using scrollTO event
-
 /**
- *  @description Scroll to section once clicked
- * * @param {object} Navigation links
- */
-function scrollToSection(navLinks){
-    // use smooth scroll
-    navLinks.addEventListener('click', function (event) {
-        event.preventDefault();
-        sectionId = nav.getAttribute("href").slice(1);
-        document.getElementById(sectionId).scrollIntoView({
-            behavior: 'smooth'
-        });
+* @description Scroll to section upon a click
+* * @param {object} Navigation links
+*/
+function scrollToSection(navLinks) {
+  for (const nav of navLinks) {
+    // override default click function and replace with "smooth" scroll behavior
+    nav.addEventListener('click', function (event) {
+      event.preventDefault();
+      sectionID = nav.getAttribute("href").slice(1);      
+      document.getElementById(sectionID).scrollIntoView({
+          behavior: 'smooth'
+      });
     });
   }
+}
+
+/**
  * End Main Functions
  * Begin Events
  * 
 */
-window.addEventListener('DOMContentloaded',(Event) => {
-    const sections = getSections();
+window.addEventListener('DOMContentLoaded', (event) => {
+  const sections = getSections();
+  
+  // Build menu
+  buildTheNav(sections);
+  
+  // Scroll to section on link click
+  const navLinks = document.querySelectorAll('.' + MENU_LINK_CLASS);
+  scrollToSection(navLinks);
 
-// Build menu 
-buildTheNav(sections);
-
-// Scroll to section on link click
-const navLinks = document.querySelectorAll('.'+ Menu_Link_Class);
-scrollToSection(navLinks);
-
-// Set sections as active
-document.addEventListener("scroll", function() {
+  // Set sections as active
+  document.addEventListener("scroll", function() {
     makeActive(sections);
-});
+  });
 });
