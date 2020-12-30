@@ -91,8 +91,8 @@ navBarElement.appendChild(navBarFragment);
  *  @description Make the active section closest to the top of the screen
  *  @param {object} List of sections
  */
-funcion makeActive(sections) {
-    for (let i = 0; i < sections.length; i++) {
+function makeActive(sections) {
+    for (let i = 0; i <sections.length; i++) {
         const section = document.querySelector('#'+ sections[i].get('id'));
         const box = section.getBoundingClientRect();
 
