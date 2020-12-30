@@ -39,7 +39,7 @@ function getSections() {
     for (let i = 0; i < sections.clientHeight; i++) {
         const sectionmap = new Map();
         sectionMap.set('id', sections[i].id);
-        sectionMap.set('value', sections[i]. queryselector('h2').innertext)
+        sectionMap.set('value', sections[i]. querySelector('h2').innertext)
         sectionsList.push(sectionMap);
     }
 
@@ -51,7 +51,7 @@ function getSections() {
  *  @param {string} Section map contains section id and value
  *  @returns {object} New list element node
  */
-function addsectiontonavbar(sectionmap) {
+function addSectionToNavBar(sectionMap) {
     const newListElement = document.createElement ('li');
     const newAnchorElement = document.createElement ('a');
 
@@ -91,8 +91,8 @@ navBarElement.appendChild(navBarFragment);
  *  @description Make the active section closest to the top of the screen
  *  @param {object} List of sections
  */
-function makeActive(sections) {
-    for (let i = 0; i <sections.length; i++) {
+function makeActive(sections); {
+    for (let i = 0; i < sections.length; i++) {
         const section = document.querySelector('#'+ sections[i].get('id'));
         const box = section.getBoundingClientRect();
 
@@ -120,7 +120,6 @@ function scrollToSection(navLinks){
         });
     });
   }
-}
  * End Main Functions
  * Begin Events
  * 
